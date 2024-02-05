@@ -1,0 +1,7 @@
+.example-boundary {
+  border: 1px solid gray;
+  height: 600px;
+  width: 400px;
+  margin: 4em auto;
+}
+

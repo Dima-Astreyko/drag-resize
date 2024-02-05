@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  position: relative;
+  user-select: none;
+}
+
+
+.resize {
+  width: 8px;
+  height: 8px;
+  border: 1px solid black;
+  background: white;
+  position: absolute;
+
+  &.top {
+    top: -4px;
+  }
+  &.left {
+    left: -4px;
+  }
+  &.right {
+    right: -4px;
+  }
+  &.bottom {
+    bottom: -4px;
+  }
+}
