@@ -48,25 +48,20 @@ export class ResizableComponent {
     return (this.elementRef.nativeElement as HTMLElement).offsetHeight;
   }
 
-  startResize(event: MouseEvent, handleResize: (startPoint: Point, delta: Point, elementRect: ElementRect, boundaryRect: ElementRect) => ElementRect) {
+  startResize(event: MouseEvent, handleResize: (delta: Point, startElementRect: ElementRect, boundaryRect: ElementRect) => ElementRect) {
     event.stopPropagation();
     event.stopImmediatePropagation();
     const boundaryElement = document.querySelector(this.cdkDrag.boundaryElement as string);
     const boundaryRect = boundaryElement.getBoundingClientRect();
-    const startPoint = this.cdkDrag.getFreeDragPosition();
-
-    const startRect = {
-      x: startPoint.x,
-      y: startPoint.y,
+    const startElementRect = {
+      ...this.cdkDrag.getFreeDragPosition(),
       width: this.width,
       height: this.height,
     }
-
-
     const duringResize = (mouseEvent: MouseEvent): void => {
       const delta = diff(mouseEvent, event);
-      const nextElementRect = handleResize(startPoint, delta, startRect, boundaryRect);
-      this.keepInBoundaries(nextElementRect, startRect, boundaryRect);
+      const nextElementRect = handleResize(delta, startElementRect, boundaryRect);
+      this.keepInBoundaries(nextElementRect, startElementRect, boundaryRect);
       this.width = nextElementRect.width;
       this.height = nextElementRect.height;
       this.cdkDrag.setFreeDragPosition(nextElementRect);
@@ -88,47 +83,47 @@ export class ResizableComponent {
     elementRect.y = Math.max(elementRect.y, 0);
   }
 
-  handleTopLeft = (startPoint: Point, delta: Point, elementRect: ElementRect, boundaryRect: ElementRect) => {
-    const width = elementRect.width + delta.x;
-    const height = elementRect.height + delta.y;
+  handleTopLeft = (delta: Point, startElementRect: ElementRect, boundaryRect: ElementRect) => {
+    const width = startElementRect.width + delta.x;
+    const height = startElementRect.height + delta.y;
     return {
-      width: Math.min(width, elementRect.x + elementRect.width),
-      height: Math.min(height, elementRect.y + elementRect.height),
-      x: startPoint.x - delta.x,
-      y: startPoint.y - delta.y,
+      width: Math.min(width, startElementRect.x + startElementRect.width),
+      height: Math.min(height, startElementRect.y + startElementRect.height),
+      x: startElementRect.x - delta.x,
+      y: startElementRect.y - delta.y,
     }
   }
 
-  handleBottomLeft = (startPoint: Point, delta: Point, elementRect: ElementRect, boundaryRect: ElementRect) => {
-    const width = elementRect.width + delta.x;
-    const height = elementRect.height - delta.y;
+  handleBottomLeft = (delta: Point, startElementRect: ElementRect, boundaryRect: ElementRect) => {
+    const width = startElementRect.width + delta.x;
+    const height = startElementRect.height - delta.y;
     return {
-      width: Math.min(width, elementRect.x + elementRect.width),
-      height: Math.min(height, boundaryRect.height - elementRect.y),
-      x: startPoint.x - delta.x,
-      y: startPoint.y,
+      width: Math.min(width, startElementRect.x + startElementRect.width),
+      height: Math.min(height, boundaryRect.height - startElementRect.y),
+      x: startElementRect.x - delta.x,
+      y: startElementRect.y,
     }
   }
 
-  handleTopRight = (startPoint: Point, delta: Point, elementRect: ElementRect, boundaryRect: ElementRect) => {
-    const width = elementRect.width - delta.x;
-    const height = elementRect.height + delta.y;
+  handleTopRight = ( delta: Point, startElementRect: ElementRect, boundaryRect: ElementRect) => {
+    const width = startElementRect.width - delta.x;
+    const height = startElementRect.height + delta.y;
     return {
-      width: Math.min(width, boundaryRect.width - elementRect.x),
-      height: Math.min(height, elementRect.y + elementRect.height),
-      x: startPoint.x,
-      y: startPoint.y - delta.y,
+      width: Math.min(width, boundaryRect.width - startElementRect.x),
+      height: Math.min(height, startElementRect.y + startElementRect.height),
+      x: startElementRect.x,
+      y: startElementRect.y - delta.y,
     }
   }
 
-  handleBottomRight = (startPoint: Point, delta: Point, elementRect: ElementRect, boundaryRect: ElementRect) => {
-    const width = elementRect.width - delta.x;
-    const height = elementRect.height - delta.y;
+  handleBottomRight = (delta: Point, startElementRect: ElementRect, boundaryRect: ElementRect) => {
+    const width = startElementRect.width - delta.x;
+    const height = startElementRect.height - delta.y;
     return {
-      width: Math.min(width, boundaryRect.width - elementRect.x),
-      height: Math.min(height, boundaryRect.height - elementRect.y),
-      x: startPoint.x,
-      y: startPoint.y,
+      width: Math.min(width, boundaryRect.width - startElementRect.x),
+      height: Math.min(height, boundaryRect.height - startElementRect.y),
+      x: startElementRect.x,
+      y: startElementRect.y,
     }
   }
 }
